@@ -76,7 +76,7 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
     const template=rank===1?"First.png":rank===2?"second.png":rank===3?"third.png":"participant.png";
     const imageUrl=new URL(`cetificates/${template}`,window.location.href).href;
     const nameTop=rank>=1&&rank<=3?"55.5%":"49.5%";
-    const certificateStyles=`@page{size:landscape;margin:0}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;place-items:center;background:#fff}.certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;container-type:inline-size}.certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}.name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:clamp(12px,2.2cqw,28px)}.date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:clamp(8px,1.48cqw,17px)}.save-certificate{position:fixed;top:16px;right:16px;padding:10px 16px;border:0;border-radius:6px;background:#173b68;color:#fff;font:600 14px Arial,sans-serif;cursor:pointer}@media screen{.certificate{width:min(96vw,144vh)}}@media print{.certificate{width:min(100vw,150vh)}.save-certificate{display:none}}`;
+    const certificateStyles=`@page{size:landscape;margin:0}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;place-items:center;background:#fff}.certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;container-type:inline-size}.certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}.name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:clamp(12px,2.2cqw,28px)}.date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:clamp(8px,1.48cqw,17px)}.certificate-actions{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2}.certificate-action{padding:10px 14px;border:0;border-radius:6px;background:#173b68;color:#fff;font:600 14px Arial,sans-serif;white-space:nowrap;cursor:pointer}@media screen{.certificate{width:min(96vw,144vh)}}@media screen and (max-width:420px){.certificate-actions{top:8px;left:8px;right:8px;transform:none;justify-content:center;gap:6px}.certificate-action{padding:9px 10px;font-size:13px}}@media print{.certificate{width:min(100vw,150vh)}.certificate-actions{display:none}}`;
     if(inline){
         const viewport=document.createElement("meta");
         viewport.name="viewport";
@@ -86,11 +86,24 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
         const style=document.createElement("style");
         style.textContent=certificateStyles;
         document.head.replaceChildren(viewport,title,style);
-        const button=document.createElement("button");
-        button.className="save-certificate";
-        button.type="button";
-        button.textContent="Save PDF";
-        button.addEventListener("click",()=>window.print());
+        const actions=document.createElement("div");
+        actions.className="certificate-actions";
+        const backButton=document.createElement("button");
+        backButton.className="certificate-action";
+        backButton.type="button";
+        backButton.textContent="Back";
+        backButton.addEventListener("click",()=>window.location.assign(getCertificateBaseUrl()));
+        const printButton=document.createElement("button");
+        printButton.className="certificate-action";
+        printButton.type="button";
+        printButton.textContent="Print Certificate";
+        printButton.addEventListener("click",()=>window.print());
+        const saveButton=document.createElement("button");
+        saveButton.className="certificate-action";
+        saveButton.type="button";
+        saveButton.textContent="Save PDF";
+        saveButton.addEventListener("click",()=>window.print());
+        actions.append(backButton,printButton,saveButton);
         const certificate=document.createElement("main");
         certificate.className="certificate";
         const image=document.createElement("img");
@@ -103,7 +116,7 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
         date.className="date";
         date.textContent=new Date().toLocaleDateString();
         certificate.append(image,name,date);
-        document.body.replaceChildren(button,certificate);
+        document.body.replaceChildren(actions,certificate);
         return;
     }
     const popup=window.open("","_blank");
