@@ -68,18 +68,49 @@ function openCertificateFromQuery(){
         time: payload.time || "00:00",
         place: payload.place || null
     };
-    renderCertificatePopup(normalized, false, false);
+    renderCertificatePopup(normalized, false, false, true);
 }
-function renderCertificatePopup(result, autoPrint=false, showQr=false){
+function renderCertificatePopup(result, autoPrint=false, showQr=false, inline=false){
     const rank=Number.parseInt(result.place,10);
     const template=rank===1?"First.png":rank===2?"second.png":rank===3?"third.png":"participant.png";
     const imageUrl=new URL(`cetificates/${template}`,window.location.href).href;
     const qrUrl=buildCertificateQrUrl(result);
-    const popup=window.open("","_blank");
-    if(!popup){msg.textContent="Allow pop-ups for this page to print the certificate.";return}
     const nameTop=rank>=1&&rank<=3?"55.5%":"49.5%";
     const qrMarkup=showQr?`<img class="qr" src="${qrUrl}" alt="QR code for this certificate"><div class="qr-label">Scan</div>`:"";
-    popup.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Certificate - ${safe(result.name||"Participant")}</title><style>@page{size:landscape;margin:0}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;place-items:center;background:#fff}.certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2}.certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}.name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:28px}.date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:17px}.qr{position:absolute;right:9%;bottom:9%;width:10.5%;height:auto;background:#fff;padding:6px;border-radius:10px;box-shadow:0 0 0 2px rgba(7,26,57,.12)}.qr-label{position:absolute;right:8%;bottom:21%;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#071a39;letter-spacing:.08em;text-transform:uppercase}@media screen{.certificate{width:min(96vw,144vh)}}@media print{.certificate{width:min(100vw,150vh)} }</style></head><body><main class="certificate"><img src="${imageUrl}" alt="Certificate template">${qrMarkup}<div class="name">${safe(result.name||"Participant")}</div><div class="date">${safe(new Date().toLocaleDateString())}</div></main></body></html>`);
+    const certificateStyles=`@page{size:landscape;margin:0}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;place-items:center;background:#fff}.certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2}.certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}.name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:28px}.date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:17px}.qr{position:absolute;right:9%;bottom:9%;width:10.5%;height:auto;background:#fff;padding:6px;border-radius:10px;box-shadow:0 0 0 2px rgba(7,26,57,.12)}.qr-label{position:absolute;right:8%;bottom:21%;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#071a39;text-transform:uppercase}.save-certificate{position:fixed;top:16px;right:16px;padding:10px 16px;border:0;border-radius:6px;background:#173b68;color:#fff;font:600 14px Arial,sans-serif;cursor:pointer}@media screen{.certificate{width:min(96vw,144vh)}}@media print{.certificate{width:min(100vw,150vh)}.save-certificate{display:none}}`;
+    if(inline){
+        const viewport=document.createElement("meta");
+        viewport.name="viewport";
+        viewport.content="width=device-width,initial-scale=1";
+        const title=document.createElement("title");
+        title.textContent=`Certificate - ${result.name||"Participant"}`;
+        const style=document.createElement("style");
+        style.textContent=certificateStyles;
+        document.head.replaceChildren(viewport,title,style);
+        const button=document.createElement("button");
+        button.className="save-certificate";
+        button.type="button";
+        button.textContent="Print / Save PDF";
+        button.addEventListener("click",()=>window.print());
+        const certificate=document.createElement("main");
+        certificate.className="certificate";
+        const image=document.createElement("img");
+        image.src=imageUrl;
+        image.alt="Certificate template";
+        const name=document.createElement("div");
+        name.className="name";
+        name.textContent=result.name||"Participant";
+        const date=document.createElement("div");
+        date.className="date";
+        date.textContent=new Date().toLocaleDateString();
+        certificate.append(image,name,date);
+        document.body.replaceChildren(button,certificate);
+        return;
+    }
+    const popup=window.open("","_blank");
+    if(!popup){msg.textContent="Allow pop-ups for this page to print the certificate.";return}
+    popup.document.open();
+    popup.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificate - ${safe(result.name||"Participant")}</title><style>${certificateStyles}</style></head><body><main class="certificate"><img src="${imageUrl}" alt="Certificate template">${qrMarkup}<div class="name">${safe(result.name||"Participant")}</div><div class="date">${safe(new Date().toLocaleDateString())}</div></main></body></html>`);
     popup.document.close();
     if(autoPrint){popup.addEventListener("load",()=>popup.print(),{once:true});}
 }
