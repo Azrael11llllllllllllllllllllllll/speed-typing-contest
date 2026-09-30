@@ -77,7 +77,7 @@ function renderCertificatePopup(result, autoPrint=false, showQr=false, inline=fa
     const qrUrl=buildCertificateQrUrl(result);
     const nameTop=rank>=1&&rank<=3?"55.5%":"49.5%";
     const qrMarkup=showQr?`<img class="qr" src="${qrUrl}" alt="QR code for this certificate"><div class="qr-label">Scan</div>`:"";
-    const certificateStyles=`@page{size:landscape;margin:0}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;place-items:center;background:#fff}.certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2}.certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}.name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:28px}.date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:17px}.qr{position:absolute;right:9%;bottom:9%;width:10.5%;height:auto;background:#fff;padding:6px;border-radius:10px;box-shadow:0 0 0 2px rgba(7,26,57,.12)}.qr-label{position:absolute;right:8%;bottom:21%;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#071a39;text-transform:uppercase}.save-certificate{position:fixed;top:16px;right:16px;padding:10px 16px;border:0;border-radius:6px;background:#173b68;color:#fff;font:600 14px Arial,sans-serif;cursor:pointer}@media screen{.certificate{width:min(96vw,144vh)}}@media print{.certificate{width:min(100vw,150vh)}.save-certificate{display:none}}`;
+    const certificateStyles=`@page{size:landscape;margin:0}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;place-items:center;background:#fff}.certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;container-type:inline-size}.certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}.name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:clamp(12px,2.2cqw,28px)}.date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:clamp(8px,1.48cqw,17px)}.qr{position:absolute;right:9%;bottom:9%;width:10.5%;height:auto;background:#fff;padding:6px;border-radius:10px;box-shadow:0 0 0 2px rgba(7,26,57,.12)}.qr-label{position:absolute;right:8%;bottom:21%;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#071a39;text-transform:uppercase}.save-certificate{position:fixed;top:16px;right:16px;padding:10px 16px;border:0;border-radius:6px;background:#173b68;color:#fff;font:600 14px Arial,sans-serif;cursor:pointer}@media screen{.certificate{width:min(96vw,144vh)}}@media print{.certificate{width:min(100vw,150vh)}.save-certificate{display:none}}`;
     if(inline){
         const viewport=document.createElement("meta");
         viewport.name="viewport";
@@ -90,7 +90,7 @@ function renderCertificatePopup(result, autoPrint=false, showQr=false, inline=fa
         const button=document.createElement("button");
         button.className="save-certificate";
         button.type="button";
-        button.textContent="Print / Save PDF";
+        button.textContent="Save PDF";
         button.addEventListener("click",()=>window.print());
         const certificate=document.createElement("main");
         certificate.className="certificate";
