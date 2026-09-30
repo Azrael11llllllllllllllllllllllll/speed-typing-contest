@@ -32,9 +32,10 @@ function printCertificateByIndex(index){let result=displayedResults[index];if(re
 function showCertificateQrByIndex(index){let result=displayedResults[index];if(result)showCertificateQr(result)}
 function getCertificateBaseUrl(){
     if(window.location.protocol==="http:"||window.location.protocol==="https:"){
+        if(["localhost","127.0.0.1"].includes(window.location.hostname))return "https://azrael11llllllllllllllllllllllll.github.io/speed-typing-contest/";
         return `${window.location.origin}${window.location.pathname.replace(/\/+$/, "")}/`;
     }
-    return "http://localhost/speed_typing_contest/";
+    return "https://azrael11llllllllllllllllllllllll.github.io/speed-typing-contest/";
 }
 function buildCertificateQrUrl(result){
     const payload={
