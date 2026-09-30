@@ -69,7 +69,7 @@ function openCertificateFromQuery(){
         time: payload.time || "00:00",
         place: payload.place || null
     };
-    renderCertificatePopup(normalized, false, false, true);
+    renderCertificatePopup(normalized, false, true);
 }
 function renderCertificatePopup(result, autoPrint=false, inline=false){
     const rank=Number.parseInt(result.place,10);
