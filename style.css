@@ -13,13 +13,35 @@
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  background: #f3f5f7;
-  color: #18202a;
-  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  background-color: #020b1b;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(0, 100, 255, 0.2), transparent 52%),
+    linear-gradient(rgba(0, 140, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 140, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(135deg, #071a3b, #020817 58%, #061634);
+  background-size: auto, 32px 32px, 32px 32px, auto;
+  color: #eaf6ff;
+  font-family: "Rajdhani", "Trebuchet MS", sans-serif;
 }
 main {
-  width: min(1050px, 94%);
-  margin: 30px auto;
+  width: min(1120px, calc(100% - 48px));
+  margin: 16px auto 72px;
+}
+main.app {
+  position: relative;
+  isolation: isolate;
+  padding: 16px 20px 56px;
+}
+main.app::before {
+  position: fixed;
+  inset: 8px;
+  z-index: -1;
+  border: 1px solid rgba(0, 173, 255, 0.36);
+  clip-path: polygon(2.5% 0, 97.5% 0, 100% 6%, 100% 94%, 97.5% 100%, 2.5% 100%, 0 94%, 0 6%);
+  box-shadow: inset 0 0 28px rgba(0, 119, 255, 0.16), 0 0 18px rgba(0, 153, 255, 0.22);
+  content: "";
+  pointer-events: none;
 }
 header {
   text-align: center;
@@ -28,23 +50,24 @@ header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  min-height: 132px;
-  margin-bottom: 16px;
+  min-height: 128px;
+  margin-bottom: 12px;
 }
 .site-logo {
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
   width: min(100%, 270px);
-  max-height: 100px;
+  max-height: 108px;
   object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(0, 153, 255, 0.28));
 }
 .event-logo {
   grid-column: 3;
   grid-row: 1;
   justify-self: end;
   width: min(100%, 270px);
-  max-height: 100px;
+  max-height: 108px;
   object-fit: contain;
   margin-right: 30px;
 }
@@ -53,78 +76,163 @@ header {
   grid-row: 1;
 }
 header h1 {
-  font-size: 42px;
+  font-family: "Orbitron", "Trebuchet MS", sans-serif;
+  font-size: 38px;
   margin: 0;
-  color: #173f67;
+  color: #f1fbff;
+  text-shadow: 0 0 8px #008cff, 0 0 22px rgba(0, 153, 255, 0.78);
+}
+.page-header p {
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 4px 28px;
+  border: 1px solid rgba(0, 194, 255, 0.8);
+  background: rgba(2, 25, 62, 0.78);
+  color: #d8f4ff;
+  font-size: 18px;
+  line-height: 1.2;
+  clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
+  box-shadow: 0 0 12px rgba(0, 195, 255, 0.32);
 }
 .card {
-  background: white;
-  border: 1px solid #d9dee7;
-  border-radius: 14px;
+  position: relative;
+  background:
+    linear-gradient(rgba(0, 122, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 122, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(145deg, rgba(8, 37, 82, 0.97), rgba(2, 12, 34, 0.98));
+  background-size: 20px 20px, 20px 20px, auto;
+  border: 1px solid rgba(0, 166, 255, 0.76);
+  border-radius: 3px;
   padding: 20px;
   margin: 16px 0;
+  box-shadow: inset 0 0 24px rgba(0, 109, 255, 0.12), 0 0 12px rgba(0, 140, 255, 0.15);
 }
 .setup {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px 0 24px;
+  gap: 24px;
+  padding: 30px 52px 28px;
+  border: 1px solid rgba(0, 182, 255, 0.82);
+  background:
+    radial-gradient(ellipse at 48% 12%, rgba(0, 106, 255, 0.16), transparent 68%),
+    linear-gradient(rgba(0, 122, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 122, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(150deg, rgba(5, 30, 73, 0.98), rgba(1, 11, 31, 0.98));
+  background-size: auto, 22px 22px, 22px 22px, auto;
+  clip-path: polygon(3.5% 0, 96.5% 0, 100% 7%, 100% 93%, 96.5% 100%, 3.5% 100%, 0 93%, 0 7%);
+  box-shadow: inset 0 0 30px rgba(0, 125, 255, 0.2), 0 0 16px rgba(0, 170, 255, 0.23);
+}
+.setup::before {
+  position: absolute;
+  inset: 7px;
+  z-index: -1;
+  border: 1px solid rgba(0, 156, 255, 0.25);
+  clip-path: polygon(3.5% 0, 96.5% 0, 100% 7%, 100% 93%, 96.5% 100%, 3.5% 100%, 0 93%, 0 7%);
+  content: "";
+  pointer-events: none;
 }
 .setup-header {
   width: 100%;
 }
 .setup-header h3 {
   margin: 0;
-  font-size: clamp(2.8rem, 3.2vw, 4.2rem);
+  font-family: "Orbitron", "Trebuchet MS", sans-serif;
+  font-size: 38px;
   line-height: 1;
   font-weight: 800;
-  letter-spacing: -0.06em;
-  color: #1e2430;
+  color: #eefaff;
+  text-shadow: 0 0 10px #087cff, 0 0 24px rgba(0, 168, 255, 0.58);
 }
 .setup-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 28px;
-  row-gap: 26px;
+  row-gap: 16px;
   align-items: start;
 }
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
 }
 .field-full {
   grid-column: 1 / -1;
 }
 .setup-form label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font-weight: 700;
-  font-size: clamp(1.2rem, 1.5vw, 1.8rem);
-  color: #1d2430;
+  font-size: 20px;
+  color: #eaf6ff;
+  text-shadow: 0 0 8px rgba(0, 132, 255, 0.35);
+}
+.setup-form label::before {
+  display: grid;
+  flex: 0 0 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid #00cfff;
+  background: rgba(0, 130, 255, 0.12);
+  color: #9af4ff;
+  font-size: 18px;
+  line-height: 1;
+  clip-path: polygon(24% 0, 76% 0, 100% 50%, 76% 100%, 24% 100%, 0 50%);
+  box-shadow: 0 0 10px rgba(0, 185, 255, 0.25);
+}
+.setup-form label[for="firstName"]::before,
+.setup-form label[for="lastName"]::before {
+  content: "";
+  background-image:
+    radial-gradient(circle at 50% 34%, #9af4ff 0 4px, transparent 4.5px),
+    radial-gradient(ellipse at 50% 95%, #9af4ff 0 9px, transparent 9.5px);
+}
+.setup-form label[for="middleInitial"]::before {
+  content: "MI";
+  font-size: 14px;
+}
+.setup-form label[for="limit"]::before {
+  content: "";
+  background-image:
+    radial-gradient(circle, transparent 0 8px, #9af4ff 8.5px 10px, transparent 10.5px),
+    linear-gradient(#9af4ff, #9af4ff),
+    linear-gradient(#9af4ff, #9af4ff);
+  background-position: center, center 36%, 58% 59%;
+  background-size: 100% 100%, 2px 7px, 6px 2px;
+  background-repeat: no-repeat;
 }
 .setup-form input,
 .setup-form select {
   width: 100%;
-  height: 58px;
-  padding: 14px 18px;
-  border: 1px solid #d5d9df;
-  border-radius: 12px;
-  background: #eef2f5;
+  height: 56px;
+  padding: 12px 18px;
+  border: 1px solid #00c8ff;
+  border-radius: 3px;
+  background: linear-gradient(100deg, rgba(10, 41, 88, 0.98), rgba(4, 22, 54, 0.98));
   font: inherit;
-  font-size: 1.08rem;
-  color: #1f2937;
+  font-size: 18px;
+  color: #effaff;
   outline: none;
+  box-shadow: inset 0 0 14px rgba(0, 122, 255, 0.19), 0 0 6px rgba(0, 205, 255, 0.28);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+.setup-form input:focus,
+.setup-form select:focus {
+  border-color: #b1f6ff;
+  box-shadow: inset 0 0 14px rgba(0, 122, 255, 0.22), 0 0 0 2px rgba(0, 202, 255, 0.27), 0 0 18px rgba(0, 194, 255, 0.45);
 }
 .setup-form select {
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, #48576a 50%), linear-gradient(135deg, #48576a 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, #70eaff 50%), linear-gradient(135deg, #70eaff 50%, transparent 50%);
   background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
   padding-right: 40px;
 }
 .setup-form input::placeholder {
-  color: #7a8190;
+  color: #8daecc;
 }
 .field-inline {
   max-width: 100%;
@@ -135,20 +243,25 @@ header h1 {
   gap: 10px;
 }
 .stats div {
-  background: #173f67;
-  color: white;
-  border-radius: 10px;
+  background: linear-gradient(140deg, #0a3679, #04152e);
+  border: 1px solid #008dff;
+  color: #dff7ff;
+  border-radius: 3px;
   padding: 14px;
   text-align: center;
   font-size: 12px;
+  box-shadow: inset 0 0 16px rgba(0, 143, 255, 0.18), 0 0 10px rgba(0, 132, 255, 0.15);
 }
 .stats b {
   display: block;
   font-size: 28px;
   margin-top: 5px;
+  color: #fff;
+  text-shadow: 0 0 12px #008cff;
 }
 #passage {
-  font: 18px/1.7 Georgia, serif;
+  color: #d4eaff;
+  font: 18px/1.7 "Rajdhani", "Trebuchet MS", sans-serif;
 }
 .buttons,
 .row {
@@ -162,14 +275,23 @@ header h1 {
 }
 button {
   padding: 11px 16px;
-  border: 1px solid #ccd3dc;
-  border-radius: 8px;
-  background: white;
+  border: 1px solid #00bfff;
+  border-radius: 3px;
+  background: linear-gradient(145deg, #0b3b82, #061b3d);
+  color: #e8faff;
   font-weight: bold;
   cursor: pointer;
+  box-shadow: inset 0 0 12px rgba(0, 143, 255, 0.15), 0 0 8px rgba(0, 153, 255, 0.16);
+  transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+button:hover:not(:disabled) {
+  background: linear-gradient(145deg, #1262ba, #082653);
+  box-shadow: inset 0 0 15px rgba(0, 198, 255, 0.24), 0 0 14px rgba(0, 185, 255, 0.32);
+  transform: translateY(-1px);
 }
 #start {
-  background: #174a7e;
+  border-color: #9af4ff;
+  background: linear-gradient(120deg, #05a8ff, #0756d7);
   color: white;
 }
 button:disabled {
@@ -202,20 +324,29 @@ table {
 th,
 td {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgba(0, 166, 255, 0.3);
   text-align: left;
 }
+th {
+  color: #67eaff;
+  font-family: "Orbitron", "Trebuchet MS", sans-serif;
+  font-size: 12px;
+}
+#results td {
+  color: #d7ebff;
+}
 #msg {
-  color: #667085;
+  color: #a9d7ff;
 }
 .typing-wrap {
   position: relative;
   margin-top: 7px;
-  border: 1px solid #ccd3dc;
-  border-radius: 10px;
-  background: #fff;
+  border: 1px solid #00bfff;
+  border-radius: 3px;
+  background: #03132e;
   min-height: 250px;
   overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.16), 0 0 10px rgba(0, 153, 255, 0.18);
 }
 .typing-wrap textarea,
 #typing-guide {
@@ -226,7 +357,7 @@ td {
   padding: 18px 20px;
   border: 0;
   border-radius: 10px;
-  font: 18px/1.7 Georgia, serif;
+  font: 18px/1.7 "Rajdhani", "Trebuchet MS", sans-serif;
   letter-spacing: 0;
   white-space: pre-wrap;
   word-break: break-word;
@@ -240,12 +371,12 @@ td {
   overflow: auto;
   background: transparent;
   color: transparent;
-  caret-color: #17212b;
+  caret-color: #9af4ff;
   text-shadow: 0 0 0 rgba(17, 24, 39, 0);
 }
 .typing-wrap textarea:disabled {
   opacity: 1;
-  background: #f8fafc;
+  background: #03132e;
   color: transparent;
 }
 .typing-wrap textarea::selection {
@@ -257,17 +388,17 @@ td {
   inset: 0;
   z-index: 1;
   overflow: hidden;
-  color: #b8bec8;
+  color: #7797bc;
   pointer-events: none;
   display: block;
 }
 .typing-wrap #typing-guide .correct {
-  color: #111827;
-  text-shadow: 0 0 0 rgba(17, 24, 39, 0.7);
+  color: #effaff;
+  text-shadow: 0 0 8px rgba(0, 213, 255, 0.72);
 }
 .typing-wrap #typing-guide .incorrect {
-  color: #d12e36;
-  text-shadow: 0 0 0 rgba(209, 46, 54, 0.7);
+  color: #ff657f;
+  text-shadow: 0 0 8px rgba(255, 46, 94, 0.6);
 }
 .floating-timer {
   position: fixed;
@@ -278,12 +409,13 @@ td {
   gap: 3px;
   min-width: 112px;
   padding: 10px 14px;
-  border: 1px solid #173f67;
-  border-radius: 8px;
-  background: #173f67;
+  border: 1px solid #00cfff;
+  border-radius: 3px;
+  background: linear-gradient(145deg, #0a3b83, #03142e);
   color: #fff;
   text-align: center;
-  box-shadow: 0 3px 12px rgba(24, 32, 42, 0.2);
+  box-shadow: 0 0 10px rgba(0, 167, 255, 0.48), inset 0 0 14px rgba(0, 131, 255, 0.18);
+  clip-path: polygon(8% 0, 92% 0, 100% 15%, 100% 85%, 92% 100%, 8% 100%, 0 85%, 0 15%);
 }
 .floating-mascot-wrap {
   position: fixed;
@@ -312,7 +444,7 @@ td {
   object-fit: contain;
 }
 .floating-mascot:focus-visible {
-  outline: 3px solid #173f67;
+  outline: 3px solid #28dfff;
   outline-offset: 3px;
   border-radius: 50%;
 }
@@ -320,14 +452,15 @@ td {
   width: min(240px, calc(100vw - 36px));
   margin: 0;
   padding: 10px 12px;
-  border: 1px solid #d9dee7;
-  border-radius: 8px;
-  background: #fff;
-  color: #173f67;
+  border: 1px solid #33dfff;
+  border-radius: 3px;
+  background: rgba(3, 20, 48, 0.96);
+  color: #dffaff;
   font-weight: 700;
   line-height: 1.4;
   text-align: center;
-  box-shadow: 0 3px 12px rgba(24, 32, 42, 0.2);
+  box-shadow: 0 0 15px rgba(0, 174, 255, 0.32), inset 0 0 14px rgba(0, 108, 255, 0.15);
+  clip-path: polygon(5% 0, 95% 0, 100% 15%, 100% 85%, 95% 100%, 5% 100%, 0 85%, 0 15%);
 }
 .floating-timer span {
   font-size: 10px;
@@ -336,18 +469,71 @@ td {
 .floating-timer b {
   font-size: 26px;
   font-variant-numeric: tabular-nums;
+  font-family: "Orbitron", "Trebuchet MS", sans-serif;
+  text-shadow: 0 0 12px #00cfff;
 }
 .floating-timer.urgent {
-  border-color: #b42318;
-  background: #b42318;
+  border-color: #ff5876;
+  background: linear-gradient(145deg, #91213d, #390d25);
   animation: timer-blink 0.8s steps(2, start) infinite;
 }
 @keyframes timer-blink {
   to { visibility: hidden; }
 }
 @media (max-width: 600px) {
+  main {
+    width: 100%;
+    margin: 0 auto 32px;
+  }
+  main.app {
+    width: 100%;
+    padding: 10px 12px 130px;
+  }
+  main.app::before {
+    inset: 4px;
+    clip-path: polygon(5% 0, 95% 0, 100% 3%, 100% 97%, 95% 100%, 5% 100%, 0 97%, 0 3%);
+  }
   .setup {
     grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 24px 20px;
+    clip-path: polygon(7% 0, 93% 0, 100% 4%, 100% 96%, 93% 100%, 7% 100%, 0 96%, 0 4%);
+  }
+  .setup-header h3 {
+    font-size: 27px;
+    line-height: 1.2;
+  }
+  .setup-form {
+    row-gap: 14px;
+  }
+  .setup-form label {
+    font-size: 17px;
+  }
+  .setup-form input,
+  .setup-form select {
+    height: 50px;
+    font-size: 16px;
+  }
+  .card {
+    padding: 16px;
+    margin: 14px 0;
+  }
+  .card h2 {
+    font-size: 20px;
+  }
+  #passage {
+    font-size: 16px;
+  }
+  .typing-wrap textarea,
+  #typing-guide {
+    padding: 14px;
+    font-size: 16px;
+  }
+  .stats div {
+    padding: 10px 8px;
+  }
+  .stats b {
+    font-size: 23px;
   }
   .stats {
     grid-template-columns: 1fr 1fr;
@@ -365,13 +551,14 @@ td {
     font-size: 20px;
   }
   .floating-mascot-wrap {
-    left: 8px;
+    left: 0;
     right: auto;
     bottom: 8px;
     justify-items: start;
   }
   .floating-mascot {
-    width: min(24vw, 100px);
+    width: min(10vw, 36px);
+    transform: translateX(-5px);
   }
   .floating-mascot img {
     transform: scaleX(-1);
@@ -406,7 +593,7 @@ td {
     width: 100%;
   }
   .page-header h1 {
-    font-size: 30px;
+    font-size: 25px;
   }
   .page-header p {
     margin: 8px 0 0;
