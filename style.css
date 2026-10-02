@@ -246,6 +246,7 @@ header h1 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+  margin-top: 24px;
 }
 .stats div {
   background: linear-gradient(140deg, #0a3679, #04152e);
@@ -546,6 +547,7 @@ th {
   }
   .stats {
     grid-template-columns: 1fr 1fr;
+    margin-top: 18px;
   }
   .setup-left h3 {
     font-size: 30px;
