@@ -126,26 +126,30 @@ function openCertificateFromQuery(){
 }
 function renderCertificatePopup(result, autoPrint=false, inline=false){
     const rank=Number.parseInt(result.place,10);
-    const template=rank===1?"First.png":rank===2?"second.png":rank===3?"third.png":"participant.png";
+    const template=rank===1?"First.png":rank===2?"second.png":rank===3?"third.png":"partipant.png";
     const imageUrl=new URL(`cetificates/${template}`,window.location.href).href;
-    const nameTop=rank>=1&&rank<=3?"55.5%":"49.5%";
+    const isFirstPlace=rank===1;
+    const certificateRatio=isFirstPlace?"3/2":"4/3";
+    const screenMaxWidth=isFirstPlace?"120vh":"110vh";
+    const printMaxWidth=isFirstPlace?"150vh":"133vh";
+    const nameTop=isFirstPlace?"59%":"55.5%";
         const certificateStyles=`
             @page{size:landscape;margin:0}
             *{box-sizing:border-box}
             html,body{width:100%;height:100%;margin:0}
             body{display:grid;place-items:center;background:#fff}
-            .certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;container-type:inline-size}
+            .certificate{position:relative;width:min(100vw,${printMaxWidth});aspect-ratio:${certificateRatio};container-type:inline-size}
             .certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
             .name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}
-            .name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:clamp(12px,2.2cqw,28px)}
-            .date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:clamp(8px,1.48cqw,17px)}
+            .name{left:18%;top:${nameTop};width:64%;transform:translateY(-50%);font-family:"Brush Script MT","Segoe Script","Apple Chancery",cursive;font-style:italic;color:#c68a20;font-size:clamp(18px,5cqw,64px)}
+            .date{display:none}
             .certificate-actions{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:7px;border:1px solid #00bfff;border-radius:4px;background:rgba(3,20,48,.96);box-shadow:0 0 16px rgba(0,174,255,.32),inset 0 0 14px rgba(0,108,255,.15);z-index:2}
             .certificate-action{padding:10px 14px;border:1px solid #00c8ff;border-radius:3px;background:linear-gradient(145deg,#0b3b82,#061b3d);color:#eaf6ff;font:700 14px Arial,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:inset 0 0 12px rgba(0,143,255,.15),0 0 8px rgba(0,153,255,.16)}
             .certificate-action:hover{background:linear-gradient(145deg,#1262ba,#082653);box-shadow:inset 0 0 15px rgba(0,198,255,.24),0 0 14px rgba(0,185,255,.32)}
             .certificate-action:focus-visible{outline:2px solid #9af4ff;outline-offset:2px}
-            @media screen{body{padding:64px 16px 20px;background-color:#020b1b;background-image:radial-gradient(ellipse at 50% 0%,rgba(0,100,255,.2),transparent 52%),linear-gradient(rgba(0,140,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(0,140,255,.055) 1px,transparent 1px),linear-gradient(135deg,#071a3b,#020817 58%,#061634);background-size:auto,32px 32px,32px 32px,auto}.certificate{width:min(92vw,128vh);filter:drop-shadow(0 0 18px rgba(0,140,255,.24))}}
-            @media screen and (max-width:420px){body{padding:56px 12px 16px}.certificate-actions{top:8px;left:8px;right:8px;transform:none;justify-content:center;gap:6px;padding:6px}.certificate-action{padding:9px 10px;font-size:13px}.certificate{width:min(96vw,128vh)}}
-            @media print{html,body{background:#fff;padding:0}.certificate{width:min(100vw,150vh);filter:none}.certificate-actions{display:none}}
+            @media screen{body{padding:64px 16px 20px;background-color:#020b1b;background-image:radial-gradient(ellipse at 50% 0%,rgba(0,100,255,.2),transparent 52%),linear-gradient(rgba(0,140,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(0,140,255,.055) 1px,transparent 1px),linear-gradient(135deg,#071a3b,#020817 58%,#061634);background-size:auto,32px 32px,32px 32px,auto}.certificate{width:min(92vw,${screenMaxWidth});filter:drop-shadow(0 0 18px rgba(0,140,255,.24))}}
+            @media screen and (max-width:420px){body{padding:56px 12px 16px}.certificate-actions{top:8px;left:8px;right:8px;transform:none;justify-content:center;gap:6px;padding:6px}.certificate-action{padding:9px 10px;font-size:13px}.certificate{width:min(96vw,${screenMaxWidth})}}
+            @media print{html,body{background:#fff;padding:0}.certificate{width:min(100vw,${printMaxWidth});filter:none}.certificate-actions{display:none}}
         `;
     if(inline){
         const viewport=document.createElement("meta");
