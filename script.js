@@ -33,7 +33,7 @@ function showCertificateQrByIndex(index){let result=displayedResults[index];if(r
 function getCertificateBaseUrl(){
     if(window.location.protocol==="http:"||window.location.protocol==="https:"){
         if(["localhost","127.0.0.1"].includes(window.location.hostname))return "https://azrael11llllllllllllllllllllllll.github.io/speed-typing-contest/";
-        return `${window.location.origin}${window.location.pathname.replace(/\/+$/, "")}/`;
+        return new URL(".",window.location.href).href;
     }
     return "https://azrael11llllllllllllllllllllllll.github.io/speed-typing-contest/";
 }
