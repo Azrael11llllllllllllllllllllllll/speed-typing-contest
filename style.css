@@ -495,8 +495,8 @@ th {
   }
   .setup {
     grid-template-columns: 1fr;
-    gap: 18px;
-    padding: 24px 20px;
+    gap: 14px;
+    padding: 20px 20px;
     clip-path: polygon(7% 0, 93% 0, 100% 4%, 100% 96%, 93% 100%, 7% 100%, 0 96%, 0 4%);
   }
   .setup-header h3 {
@@ -504,14 +504,18 @@ th {
     line-height: 1.2;
   }
   .setup-form {
-    row-gap: 14px;
+    row-gap: 4px;
   }
   .setup-form label {
     font-size: 17px;
   }
+  .setup-form label::before {
+    flex-basis: 28px;
+    height: 26px;
+  }
   .setup-form input,
   .setup-form select {
-    height: 50px;
+    height: 44px;
     font-size: 16px;
   }
   .card {
@@ -551,14 +555,13 @@ th {
     font-size: 20px;
   }
   .floating-mascot-wrap {
-    left: 0;
+    left: 8px;
     right: auto;
     bottom: 8px;
     justify-items: start;
   }
   .floating-mascot {
-    width: min(10vw, 36px);
-    transform: translateX(-5px);
+    width: min(18vw, 70px);
   }
   .floating-mascot img {
     transform: scaleX(-1);
@@ -570,7 +573,7 @@ th {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
-    padding-top: 100px;
+    padding-top: 72px;
   }
   .site-logo {
     grid-column: 1;
