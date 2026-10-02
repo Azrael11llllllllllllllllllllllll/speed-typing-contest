@@ -143,7 +143,15 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
             .certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
             .name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}
             .name{left:18%;top:${nameTop};width:64%;transform:translateY(-50%);font-family:"Brush Script MT","Segoe Script","Apple Chancery",cursive;font-style:italic;color:#c68a20;font-size:clamp(30px,${nameFontScale}cqw,92px);line-height:1;letter-spacing:.02em}
-            @media print{html,body{background:#fff;padding:0}.certificate{width:min(100vw,${printMaxWidth});filter:none}.certificate-actions{display:none}.name{font-size:clamp(42px,calc(${nameFontScale} * 1.45cqw),118px);left:17%;width:66%}}
+            @media print{
+                @page{size:landscape;margin:0}
+                html,body{background:#fff;padding:0 !important;margin:0 !important;width:100% !important;height:auto !important;overflow:visible}
+                body{display:block}
+                .certificate{width:100% !important;max-width:100% !important;height:auto !important;aspect-ratio:4/3 !important;filter:none !important;margin:0 !important}
+                .certificate img{width:100% !important;height:auto !important;display:block !important}
+                .certificate-actions{display:none !important}
+                .name{left:18% !important;top:55.5% !important;width:64% !important;font-size:90px !important;line-height:.9 !important;letter-spacing:.03em !important;white-space:nowrap !important;transform:translateY(-50%) !important}
+            }
             .date{display:none}
             .certificate-actions{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:7px;border:1px solid #00bfff;border-radius:4px;background:rgba(3,20,48,.96);box-shadow:0 0 16px rgba(0,174,255,.32),inset 0 0 14px rgba(0,108,255,.15);z-index:2}
             .certificate-action{padding:10px 14px;border:1px solid #00c8ff;border-radius:3px;background:linear-gradient(145deg,#0b3b82,#061b3d);color:#eaf6ff;font:700 14px Arial,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:inset 0 0 12px rgba(0,143,255,.15),0 0 8px rgba(0,153,255,.16)}
