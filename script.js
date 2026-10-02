@@ -1,16 +1,4 @@
-
-const samMascotButton=document.getElementById("mascot-button");
-const samMascotMessage=document.getElementById("mascot-message");
-let samMascotMessageTimeout;
-if(samMascotButton&&samMascotMessage){
-  const samMessages=["You can do it!","Good morning! Keep going!","Stay focused, you’ve got this!","Every keystroke gets you closer!"];
-  samMascotButton.addEventListener("click",()=>{
-    samMascotMessage.textContent=samMessages[Math.floor(Math.random()*samMessages.length)];
-    samMascotMessage.hidden=false;
-    clearTimeout(samMascotMessageTimeout);
-    samMascotMessageTimeout=setTimeout(()=>{samMascotMessage.hidden=true},4500);
-  });
-}const $=x=>document.getElementById(x),firstName=$("firstName"),middleInitial=$("middleInitial"),lastName=$("lastName"),limit=$("limit"),typing=$("typing"),guide=$("typing-guide"),passage=$("passage").textContent.replace(/\s+/g," ").trim(),timer=$("timer"),timerWrap=$("floating-timer"),wpm=$("wpm"),acc=$("acc"),score=$("score"),msg=$("msg"),start=$("start"),reset=$("reset"),results=$("results"),supabaseConfig=window.SUPABASE_CONFIG||{},supabaseEnabled=Boolean(supabaseConfig.url&&supabaseConfig.anonKey);let id=null,running=false,prestartId=null,duration=300,left=300,began=0,deadline=0,last=null,serverResults=null,serverSnapshot=null,displayedResults=[],audioContext=null,lastWarningSecond=null,prestartCount=0;
+const $=x=>document.getElementById(x),firstName=$("firstName"),middleInitial=$("middleInitial"),lastName=$("lastName"),limit=$("limit"),typing=$("typing"),guide=$("typing-guide"),passage=$("passage").textContent.replace(/\s+/g," ").trim(),timer=$("timer"),timerWrap=$("floating-timer"),wpm=$("wpm"),acc=$("acc"),score=$("score"),msg=$("msg"),start=$("start"),reset=$("reset"),results=$("results"),supabaseConfig=window.SUPABASE_CONFIG||{},supabaseEnabled=Boolean(supabaseConfig.url&&supabaseConfig.anonKey);let id=null,running=false,prestartId=null,duration=300,left=300,began=0,deadline=0,last=null,serverResults=null,serverSnapshot=null,displayedResults=[],audioContext=null,lastWarningSecond=null,prestartCount=0;
 function getParticipantName(){const nameParts=[firstName&&firstName.value.trim(),middleInitial&&middleInitial.value.trim()?middleInitial.value.trim()+".":"",lastName&&lastName.value.trim()].filter(Boolean);return nameParts.join(" ");}
 function capitalizeNameField(value){return value.replace(/[^\p{L} '\u2019-]/gu,"").replace(/(^|[ '\u2019-])(\p{L})/gu,(_,separator,letter)=>separator+letter.toUpperCase()).replace(/(\p{L})([^ '\u2019-]*)/gu,(_,first,rest)=>first+rest.toLowerCase());}
 function formatMiddleInitial(value){return value.replace(/[^A-Za-z]/g,"").slice(0,2).toUpperCase();}
@@ -31,15 +19,68 @@ function elapsed(r){if(Number.isFinite(+r.elapsedMs)&&+r.elapsedMs>0)return+r.el
 function ordinal(n){let mod100=n%100;return n+(mod100>=11&&mod100<=13?"th":n%10===1?"st":n%10===2?"nd":n%10===3?"rd":"th")+" place"}
 function render(){let d=[...(serverResults??data())],ranked=d.filter(r=>r.completed===true).sort((a,b)=>elapsed(a)-elapsed(b)||b.wpm-a.wpm||b.accuracy-a.accuracy),places=new Map(ranked.map((r,i)=>[r,ordinal(i+1)]));d.sort((a,b)=>{let ar=places.has(a),br=places.has(b);return ar!==br?(ar?-1:1):ar?ranked.indexOf(a)-ranked.indexOf(b):0});displayedResults=d.map(r=>({...r,place:places.get(r)||null}));results.innerHTML=d.length?displayedResults.map((r,i)=>`<tr><td>${safe(r.name)}</td><td>${r.wpm}</td><td>${r.accuracy}%</td><td>${r.score}</td><td>${safe(r.time)}</td><td>${r.errors ?? 0}</td><td>${r.place||"Not completed"}<div class="certificate-actions"><button type="button" class="row-certificate" onclick="printCertificateByIndex(${i})">Print Certificate</button><button type="button" class="row-qr" onclick="showCertificateQrByIndex(${i})">QR Code</button></div></td></tr>`).join(""):`<tr><td colspan="7">No saved results yet.</td></tr>`}
 function safe(s){let d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function canUseServerBackend(){
+    const host=(window.location.hostname||"").toLowerCase();
+    if(supabaseEnabled)return true;
+    return host==="localhost"||host==="127.0.0.1"||host.endsWith(".local");
+}
 async function refreshResults(){try{let endpoint=supabaseEnabled?`${supabaseConfig.url.replace(/\/$/,"")}/rest/v1/contest_results?select=name,wpm,accuracy,score,time,date,elapsed_ms,errors,completed&order=id.desc`:`save_result.php?_=${Date.now()}`,headers=supabaseEnabled?{apikey:supabaseConfig.anonKey,Authorization:`Bearer ${supabaseConfig.anonKey}`}:{},response=await fetch(endpoint,{cache:"no-store",headers});if(response.ok){let payload=await response.json();if(supabaseEnabled&&Array.isArray(payload))payload=payload.map(({elapsed_ms,...result})=>({...result,elapsedMs:elapsed_ms}));if(Array.isArray(payload)){let snapshot=JSON.stringify(payload);if(snapshot!==serverSnapshot){serverSnapshot=snapshot;serverResults=payload;render()}}}}catch(e){serverResults=null}}
-async function savePHP(r){try{let endpoint=supabaseEnabled?`${supabaseConfig.url.replace(/\/$/,"")}/rest/v1/contest_results`:"save_result.php",headers={"Content-Type":"application/json"},body=r;if(supabaseEnabled){headers.apikey=supabaseConfig.anonKey;headers.Authorization=`Bearer ${supabaseConfig.anonKey}`;headers.Prefer="return=minimal";body={name:r.name,wpm:r.wpm,accuracy:r.accuracy,score:r.score,time:r.time,date:r.date,elapsed_ms:r.elapsedMs,errors:r.errors,completed:r.completed}}let response=await fetch(endpoint,{method:"POST",headers,body:JSON.stringify(body)});if(!response.ok)throw new Error("Could not save result");await refreshResults()}catch(e){serverResults=null;render()}}
+async function refreshResults(){
+    if(!supabaseEnabled&&!canUseServerBackend()){
+        const items=data();
+        serverResults=items;
+        serverSnapshot=JSON.stringify(items);
+        render();
+        return;
+    }
+    try{
+        let endpoint=supabaseEnabled?`${supabaseConfig.url.replace(/\/$/,"")}/rest/v1/contest_results?select=name,wpm,accuracy,score,time,date,elapsed_ms,errors,completed&order=id.desc`:`save_result.php?_=${Date.now()}`;
+        let headers=supabaseEnabled?{apikey:supabaseConfig.anonKey,Authorization:`Bearer ${supabaseConfig.anonKey}`}:{};
+        let response=await fetch(endpoint,{cache:"no-store",headers});
+        if(response.ok){
+            let payload=await response.json();
+            if(supabaseEnabled&&Array.isArray(payload))payload=payload.map(({elapsed_ms,...result})=>({...result,elapsedMs:elapsed_ms}));
+            if(Array.isArray(payload)){let snapshot=JSON.stringify(payload);if(snapshot!==serverSnapshot){serverSnapshot=snapshot;serverResults=payload;render()}}}
+    }catch(e){serverResults=null}
+}
+async function savePHP(r){
+    if(!supabaseEnabled&&!canUseServerBackend()){
+        const d=data();
+        d.unshift(r);
+        localStorage.setItem("typingResults",JSON.stringify(d.slice(0,200)));
+        serverResults=d.slice(0,200);
+        serverSnapshot=JSON.stringify(serverResults);
+        render();
+        return;
+    }
+    try{let endpoint=supabaseEnabled?`${supabaseConfig.url.replace(/\/$/,"")}/rest/v1/contest_results`:"save_result.php",headers={"Content-Type":"application/json"},body=r;if(supabaseEnabled){headers.apikey=supabaseConfig.anonKey;headers.Authorization=`Bearer ${supabaseConfig.anonKey}`;headers.Prefer="return=minimal";body={name:r.name,wpm:r.wpm,accuracy:r.accuracy,score:r.score,time:r.time,date:r.date,elapsed_ms:r.elapsedMs,errors:r.errors,completed:r.completed}}let response=await fetch(endpoint,{method:"POST",headers,body:JSON.stringify(body)});if(!response.ok)throw new Error("Could not save result");await refreshResults()}catch(e){serverResults=null;render()}}
 function stop(reason="manual"){if(!running)return;running=false;clearInterval(id);timerWrap.classList.remove("urgent");if(reason==="timeout")playTimerTone("finish");let elapsedMs=Math.max(1,Date.now()-began),m=metrics(),usedSeconds=Math.max(1,Math.round(elapsedMs/1000));last={name:getParticipantName(),...m,time:fmt(usedSeconds),date:new Date().toLocaleString(),elapsedMs,completed:reason==="complete",errors:m.errors};let d=data();d.unshift(last);localStorage.setItem("typingResults",JSON.stringify(d.slice(0,200)));savePHP(last);typing.disabled=true;firstName.disabled=false;middleInitial.disabled=false;lastName.disabled=false;limit.disabled=false;start.disabled=false;render();msg.className=reason==="timeout"?"timeout":reason==="complete"?"congratulations":"";msg.style.cssText=reason==="timeout"?"color:#b42318;font-weight:bold;font-size:18px":reason==="complete"?"color:#067647;font-weight:bold;font-size:18px":"";let ending=reason==="timeout"?"Time's up! Your time limit has ended. ":reason==="complete"?"Congratulations! You completed the passage. ":"";msg.textContent=`${ending}Saved: ${last.wpm} WPM • ${last.accuracy}% accuracy • ${last.errors} errors • Score ${last.score}`;update()}
 start.onclick=()=>{const fullName=getParticipantName();if(!fullName){msg.textContent="Enter participant name first.";return}const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(AudioContextClass){audioContext??=new AudioContextClass();if(audioContext.state==="suspended")audioContext.resume().catch(()=>{})}startCountdown();}
 typing.oninput=()=>{renderTypingGuide();update();if(typing.value===passage)stop("complete")};typing.onscroll=renderTypingGuide
 reset.onclick=()=>{clearInterval(id);running=false;began=0;deadline=0;left=+limit.value;showTime(left);typing.value="";guide.style.display="none";renderTypingGuide();typing.disabled=true;firstName.disabled=false;middleInitial.disabled=false;lastName.disabled=false;limit.disabled=false;start.disabled=false;wpm.textContent=0;acc.textContent="100%";score.textContent=0;msg.className="";msg.style.cssText="";msg.textContent="Ready."}
 limit.onchange=()=>{if(!running)showTime(+limit.value)}
-$("clear").hidden=supabaseEnabled;
-$("clear").onclick=async()=>{if(!confirm("Clear all saved contest results?"))return;try{let response=await fetch("save_result.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"clear"})}),result=await response.json();if(!response.ok||!result.success)throw new Error("Server could not clear results");localStorage.removeItem("typingResults");serverResults=[];serverSnapshot="[]";render();msg.textContent="All saved results cleared."}catch(error){msg.textContent="Could not clear saved results. Check the server and try again."}}
+const clearButton=$("clear");
+clearButton.hidden=!supabaseEnabled&&window.location.hostname.endsWith(".github.io");
+clearButton.onclick=async()=>{
+    if(!confirm("Clear all saved contest results?"))return;
+    const password=window.prompt("Enter the password to clear results:");
+    if(password===null)return;
+    try{
+        const endpoint=supabaseEnabled?`${supabaseConfig.url.replace(/\/$/,"")}/functions/v1/clear-results`:"save_result.php";
+        const headers={"Content-Type":"application/json"};
+        const body=supabaseEnabled?{password}:{action:"clear",password};
+        if(supabaseEnabled){headers.apikey=supabaseConfig.anonKey;headers.Authorization=`Bearer ${supabaseConfig.anonKey}`;}
+        const response=await fetch(endpoint,{method:"POST",headers,body:JSON.stringify(body)});
+        const result=await response.json();
+        if(response.status===401){msg.textContent="Wrong password. Clear Results failed.";return;}
+        if(!response.ok||!result.success)throw new Error("Server could not clear results");
+        localStorage.removeItem("typingResults");
+        serverResults=[];
+        serverSnapshot="[]";
+        render();
+        msg.textContent="All saved contest results cleared.";
+    }catch(error){msg.textContent="Could not clear results. Check the server configuration and try again.";}
+};
 function printCertificateByIndex(index){let result=displayedResults[index];if(result)printCertificate(result)}
 function showCertificateQrByIndex(index){let result=displayedResults[index];if(result)showCertificateQr(result)}
 function getCertificateBaseUrl(){
@@ -88,7 +129,24 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
     const template=rank===1?"First.png":rank===2?"second.png":rank===3?"third.png":"participant.png";
     const imageUrl=new URL(`cetificates/${template}`,window.location.href).href;
     const nameTop=rank>=1&&rank<=3?"55.5%":"49.5%";
-    const certificateStyles=`@page{size:landscape;margin:0}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:grid;place-items:center;background:#fff}.certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;container-type:inline-size}.certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}.name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:clamp(12px,2.2cqw,28px)}.date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:clamp(8px,1.48cqw,17px)}.certificate-actions{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2}.certificate-action{padding:10px 14px;border:0;border-radius:6px;background:#173b68;color:#fff;font:600 14px Arial,sans-serif;white-space:nowrap;cursor:pointer}@media screen{.certificate{width:min(96vw,144vh)}}@media screen and (max-width:420px){.certificate-actions{top:8px;left:8px;right:8px;transform:none;justify-content:center;gap:6px}.certificate-action{padding:9px 10px;font-size:13px}}@media print{.certificate{width:min(100vw,150vh)}.certificate-actions{display:none}}`;
+        const certificateStyles=`
+            @page{size:landscape;margin:0}
+            *{box-sizing:border-box}
+            html,body{width:100%;height:100%;margin:0}
+            body{display:grid;place-items:center;background:#fff}
+            .certificate{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;container-type:inline-size}
+            .certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+            .name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}
+            .name{left:29%;top:${nameTop};width:57%;transform:translateY(-50%);font-size:clamp(12px,2.2cqw,28px)}
+            .date{left:52.5%;top:84%;width:22%;transform:translateY(-50%);font-size:clamp(8px,1.48cqw,17px)}
+            .certificate-actions{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:7px;border:1px solid #00bfff;border-radius:4px;background:rgba(3,20,48,.96);box-shadow:0 0 16px rgba(0,174,255,.32),inset 0 0 14px rgba(0,108,255,.15);z-index:2}
+            .certificate-action{padding:10px 14px;border:1px solid #00c8ff;border-radius:3px;background:linear-gradient(145deg,#0b3b82,#061b3d);color:#eaf6ff;font:700 14px Arial,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:inset 0 0 12px rgba(0,143,255,.15),0 0 8px rgba(0,153,255,.16)}
+            .certificate-action:hover{background:linear-gradient(145deg,#1262ba,#082653);box-shadow:inset 0 0 15px rgba(0,198,255,.24),0 0 14px rgba(0,185,255,.32)}
+            .certificate-action:focus-visible{outline:2px solid #9af4ff;outline-offset:2px}
+            @media screen{body{padding:64px 16px 20px;background-color:#020b1b;background-image:radial-gradient(ellipse at 50% 0%,rgba(0,100,255,.2),transparent 52%),linear-gradient(rgba(0,140,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(0,140,255,.055) 1px,transparent 1px),linear-gradient(135deg,#071a3b,#020817 58%,#061634);background-size:auto,32px 32px,32px 32px,auto}.certificate{width:min(92vw,128vh);filter:drop-shadow(0 0 18px rgba(0,140,255,.24))}}
+            @media screen and (max-width:420px){body{padding:56px 12px 16px}.certificate-actions{top:8px;left:8px;right:8px;transform:none;justify-content:center;gap:6px;padding:6px}.certificate-action{padding:9px 10px;font-size:13px}.certificate{width:min(96vw,128vh)}}
+            @media print{html,body{background:#fff;padding:0}.certificate{width:min(100vw,150vh);filter:none}.certificate-actions{display:none}}
+        `;
     if(inline){
         const viewport=document.createElement("meta");
         viewport.name="viewport";
@@ -147,6 +205,16 @@ function showCertificateQr(result){
     popup.document.close();
 }
 function printCertificate(result){renderCertificatePopup(result,false,true)}
+const mascotButton=$("mascot-button"),mascotMessage=$("mascot-message");let mascotMessageTimeout;
+if(mascotButton&&mascotMessage){
+    const mascotMessages=["You can do it!","Keep going!","Stay focused, you’ve got this!","Every keystroke gets you closer!","Believe in yourself!","You’re doing great!","Keep your eyes on the prize!","Stay strong, you can finish this!","You’re almost there!","Keep typing, you’re doing amazing!"];
+    mascotButton.addEventListener("click",()=>{
+        mascotMessage.textContent=mascotMessages[Math.floor(Math.random()*mascotMessages.length)];
+        mascotMessage.hidden=false;
+        clearTimeout(mascotMessageTimeout);
+        mascotMessageTimeout=setTimeout(()=>{mascotMessage.hidden=true},4500);
+    });
+}
 renderTypingGuide();
 openCertificateFromQuery();
 refreshResults();
