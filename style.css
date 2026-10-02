@@ -57,10 +57,10 @@ header {
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
-  width: min(100%, 270px);
-  max-height: 108px;
+  width: min(100%, 300px);
+  max-height: 120px;
   object-fit: contain;
-  filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(0, 153, 255, 0.28));
+  filter: brightness(2.4) saturate(1.2) drop-shadow(0 0 10px rgba(0, 153, 255, 0.28));
 }
 .event-logo {
   grid-column: 3;
