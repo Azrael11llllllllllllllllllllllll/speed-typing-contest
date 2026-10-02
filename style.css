@@ -225,11 +225,16 @@ header h1 {
 }
 .setup-form select {
   appearance: none;
+  color-scheme: dark;
   background-image: linear-gradient(45deg, transparent 50%, #70eaff 50%), linear-gradient(135deg, #70eaff 50%, transparent 50%);
   background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
   padding-right: 40px;
+}
+.setup-form select option {
+  background-color: #04152e;
+  color: #effaff;
 }
 .setup-form input::placeholder {
   color: #8daecc;
