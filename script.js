@@ -126,13 +126,14 @@ function openCertificateFromQuery(){
 }
 function renderCertificatePopup(result, autoPrint=false, inline=false){
     const rank=Number.parseInt(result.place,10);
-    const template=rank===1?"First.png":rank===2?"second.png":rank===3?"third.png":"participant.png";
+    const template=rank===1?"First_clean.png":rank===2?"second_clean.png":rank===3?"third_clean.png":"participant_clean.png";
     const imageUrl=new URL(`cetificates/${template}`,window.location.href).href;
-    const isFirstPlace=rank===1;
-    const certificateRatio=isFirstPlace?"3/2":"4/3";
-    const screenMaxWidth=isFirstPlace?"120vh":"110vh";
-    const printMaxWidth=isFirstPlace?"150vh":"133vh";
-    const nameTop=isFirstPlace?"59%":"55.5%";
+    const certificateRatio="4/3";
+    const screenMaxWidth="110vh";
+    const printMaxWidth="133vh";
+    const nameTop="55.5%";
+    const nameText=result.name||"Participant";
+    const nameFontScale=Math.max(1.7,Math.min(4.5,75/[...nameText].length));
         const certificateStyles=`
             @page{size:landscape;margin:0}
             *{box-sizing:border-box}
@@ -141,7 +142,7 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
             .certificate{position:relative;width:min(100vw,${printMaxWidth});aspect-ratio:${certificateRatio};container-type:inline-size}
             .certificate img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
             .name,.date{position:absolute;text-align:center;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;color:#071a39}
-            .name{left:18%;top:${nameTop};width:64%;transform:translateY(-50%);font-family:"Brush Script MT","Segoe Script","Apple Chancery",cursive;font-style:italic;color:#c68a20;font-size:clamp(18px,5cqw,64px)}
+            .name{left:18%;top:${nameTop};width:64%;transform:translateY(-50%);font-family:"Brush Script MT","Segoe Script","Apple Chancery",cursive;font-style:italic;color:#c68a20;font-size:clamp(16px,${nameFontScale}cqw,64px)}
             .date{display:none}
             .certificate-actions{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:7px;border:1px solid #00bfff;border-radius:4px;background:rgba(3,20,48,.96);box-shadow:0 0 16px rgba(0,174,255,.32),inset 0 0 14px rgba(0,108,255,.15);z-index:2}
             .certificate-action{padding:10px 14px;border:1px solid #00c8ff;border-radius:3px;background:linear-gradient(145deg,#0b3b82,#061b3d);color:#eaf6ff;font:700 14px Arial,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:inset 0 0 12px rgba(0,143,255,.15),0 0 8px rgba(0,153,255,.16)}
@@ -185,7 +186,7 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
         image.alt="Certificate template";
         const name=document.createElement("div");
         name.className="name";
-        name.textContent=result.name||"Participant";
+        name.textContent=nameText;
         const date=document.createElement("div");
         date.className="date";
         date.textContent=new Date().toLocaleDateString();
@@ -196,7 +197,7 @@ function renderCertificatePopup(result, autoPrint=false, inline=false){
     const popup=window.open("","_blank");
     if(!popup){msg.textContent="Allow pop-ups for this page to print the certificate.";return}
     popup.document.open();
-    popup.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificate - ${safe(result.name||"Participant")}</title><style>${certificateStyles}</style></head><body><main class="certificate"><img src="${imageUrl}" alt="Certificate template"><div class="name">${safe(result.name||"Participant")}</div><div class="date">${safe(new Date().toLocaleDateString())}</div></main></body></html>`);
+    popup.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificate - ${safe(nameText)}</title><style>${certificateStyles}</style></head><body><main class="certificate"><img src="${imageUrl}" alt="Certificate template"><div class="name">${safe(nameText)}</div><div class="date">${safe(new Date().toLocaleDateString())}</div></main></body></html>`);
     popup.document.close();
     if(autoPrint){popup.addEventListener("load",()=>popup.print(),{once:true});}
 }
