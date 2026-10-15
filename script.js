@@ -1,3 +1,10 @@
+const rulesDialog=document.getElementById("rules-dialog"),rulesAgree=document.getElementById("rules-agree"),rulesContinue=document.getElementById("rules-continue");
+rulesDialog.addEventListener("cancel",event=>event.preventDefault());
+rulesAgree.addEventListener("change",()=>{rulesContinue.disabled=!rulesAgree.checked;});
+rulesContinue.addEventListener("click",()=>{if(rulesAgree.checked)rulesDialog.close();});
+rulesDialog.showModal();
+rulesAgree.focus();
+
 const $=x=>document.getElementById(x),firstName=$("firstName"),middleInitial=$("middleInitial"),lastName=$("lastName"),limit=$("limit"),typing=$("typing"),guide=$("typing-guide"),passage=$("passage").textContent.replace(/\s+/g," ").trim(),timer=$("timer"),timerWrap=$("floating-timer"),wpm=$("wpm"),acc=$("acc"),score=$("score"),msg=$("msg"),start=$("start"),reset=$("reset"),results=$("results"),supabaseConfig=window.SUPABASE_CONFIG||{},supabaseEnabled=Boolean(supabaseConfig.url&&supabaseConfig.anonKey);let id=null,running=false,prestartId=null,duration=300,left=300,began=0,deadline=0,last=null,serverResults=null,serverSnapshot=null,displayedResults=[],audioContext=null,lastWarningSecond=null,prestartCount=0;
 function getParticipantName(){const nameParts=[firstName&&firstName.value.trim(),middleInitial&&middleInitial.value.trim()?middleInitial.value.trim()+".":"",lastName&&lastName.value.trim()].filter(Boolean);return nameParts.join(" ");}
 function capitalizeNameField(value){return value.replace(/[^\p{L} '\u2019-]/gu,"").replace(/(^|[ '\u2019-])(\p{L})/gu,(_,separator,letter)=>separator+letter.toUpperCase()).replace(/(\p{L})([^ '\u2019-]*)/gu,(_,first,rest)=>first+rest.toLowerCase());}
