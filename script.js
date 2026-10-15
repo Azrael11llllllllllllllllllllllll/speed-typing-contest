@@ -232,3 +232,16 @@ renderTypingGuide();
 openCertificateFromQuery();
 refreshResults();
 setInterval(refreshResults,2000);
+function failAttemptForPaste(event){
+    const isTypingInput=event.target instanceof HTMLTextAreaElement&&event.target.id==="typing";
+    if(!running||!isTypingInput)return;
+    event.preventDefault();
+    stop("paste");
+    msg.className="failed";
+    msg.style.cssText="color:#b42318;font-weight:bold;font-size:18px";
+    msg.textContent="Paste detected. This attempt has automatically failed.";
+}
+
+document.addEventListener("paste",failAttemptForPaste);
+document.addEventListener("drop",failAttemptForPaste);
+document.addEventListener("beforeinput",event=>{if(event.inputType==="insertFromPaste")failAttemptForPaste(event)});
