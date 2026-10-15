@@ -7,9 +7,50 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=17">
+    <link rel="stylesheet" href="style.css?v=19">
   </head>
   <body>
+    <dialog id="rules-dialog" class="rules-dialog" aria-labelledby="rules-title" aria-describedby="rules-intro">
+      <div class="rules-dialog-content">
+        <header class="rules-dialog-header">
+          <p class="rules-eyebrow">PLEASE READ BEFORE CONTINUING</p>
+          <h1 id="rules-title">Mechanics and Rules</h1>
+          <p id="rules-intro">Review the contest guidelines below. You must agree before you can continue to the website.</p>
+        </header>
+        <section class="rules-section" aria-labelledby="mechanics-title">
+          <h2 id="mechanics-title">Mechanics</h2>
+          <ol>
+            <li>Twenty (20) participants compete at the same time using separate assigned computers or laptops.</li>
+            <li>All participants type the same Hard Mode passage containing challenging words, punctuation, capitalization, numbers, symbols, or complex sentences.</li>
+            <li>The passage is revealed only after the facilitator gives the start signal. Everyone begins at the same time.</li>
+            <li>Participants have a maximum of five (5) minutes to complete the passage. A visible countdown timer may be used.</li>
+            <li>The passage must be typed manually. Copy-and-paste, predictive text, autocorrect assistance, outside help, and use of another participant's device are prohibited.</li>
+            <li>Once finished, the participant must stop typing and immediately signal the judge. The judge records the exact completion time.</li>
+            <li>Only the first three qualified finishers will be awarded. The fastest is Champion/1st Place, followed by 2nd Place and 3rd Place.</li>
+            <li>At five minutes, all unfinished participants must stop. An unfinished entry cannot rank ahead of a participant who completed and qualified within the limit.</li>
+            <li>If official times are equal, higher accuracy ranks first. If still tied, a one-minute tie-breaker using a new Hard Mode passage will determine the ranking.</li>
+          </ol>
+        </section>
+        <section class="rules-section" aria-labelledby="rules-list-title">
+          <h2 id="rules-list-title">Rules</h2>
+          <ul>
+            <li>Participants must type only on their assigned device.</li>
+            <li>Copy-and-paste, predictive text, autocorrect assistance, and outside help are prohibited.</li>
+            <li>Participants must stop typing once the five-minute time limit ends.</li>
+            <li>Judges' verified time and accuracy records are the official basis for ranking.</li>
+          </ul>
+        </section>
+        <footer class="rules-dialog-footer">
+          <label class="rules-agreement">
+            <input id="rules-agree" type="checkbox">
+            <span>I have read and agree to follow the mechanics and rules.</span>
+          </label>
+          <button id="rules-continue" type="button" disabled>Continue</button>
+        </footer>
+      </div>
+    </dialog>
+
+
     <main class="app">
       <aside id="floating-timer" class="floating-timer" aria-live="polite" aria-label="Time remaining">
         <span>TIME LEFT</span>
@@ -135,6 +176,6 @@
     </main>
 
     <script src="supabase-config.js?v=1"></script>
-    <script src="script.js?v=35"></script>
+    <script src="script.js?v=37"></script>
   </body>
 </html>
