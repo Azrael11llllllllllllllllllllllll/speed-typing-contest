@@ -13,6 +13,7 @@ create table public.contest_results (
 
 alter table public.contest_results enable row level security;
 grant select, insert on public.contest_results to anon;
+grant select, delete on public.contest_results to service_role;
 grant usage, select on sequence public.contest_results_id_seq to anon;
 
 create policy "Anyone can view contest results"
