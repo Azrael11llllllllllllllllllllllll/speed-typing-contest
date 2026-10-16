@@ -5,6 +5,7 @@ http://localhost/speed_typing_contest/
 PHP additionally stores entries in results.json.
 
 Features:
+- Click Sam to hear a random encouraging message
 - Participant name
 - 1, 2, 3, or 5 minute timer
 - WPM, accuracy and score
