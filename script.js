@@ -67,7 +67,9 @@ typing.oninput=()=>{renderTypingGuide();update();if(typing.value===passage)stop(
 reset.onclick=()=>{clearInterval(id);running=false;began=0;deadline=0;left=+limit.value;showTime(left);typing.value="";guide.style.display="none";renderTypingGuide();typing.disabled=true;firstName.disabled=false;middleInitial.disabled=false;lastName.disabled=false;limit.disabled=false;start.disabled=false;wpm.textContent=0;acc.textContent="100%";score.textContent=0;msg.className="";msg.style.cssText="";msg.textContent="Ready."}
 limit.onchange=()=>{if(!running)showTime(+limit.value)}
 const clearButton=$("clear");
-clearButton.hidden=!supabaseEnabled&&window.location.hostname.endsWith(".github.io");
+clearButton.hidden=window.SPEED_TYPING_OFFLINE_APP===true||(!supabaseEnabled&&window.location.hostname.endsWith(".github.io"));
+const apkDownloadPanel=document.querySelector(".apk-download-panel");
+if(window.SPEED_TYPING_OFFLINE_APP===true&&apkDownloadPanel)apkDownloadPanel.hidden=true;
 clearButton.onclick=async()=>{
     if(!confirm("Clear all saved contest results?"))return;
     const password=window.prompt("Enter the password to clear results:");
