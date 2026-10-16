@@ -236,8 +236,14 @@ if(mascotButton&&mascotMessage){
             window.speechSynthesis.cancel();
             const spokenMessage=new SpeechSynthesisUtterance(message);
             spokenMessage.lang="en-US";
-            spokenMessage.rate=0.95;
-            spokenMessage.pitch=1.05;
+            spokenMessage.rate=1.08;
+            spokenMessage.pitch=1.35;
+            const upbeatVoiceNames=["zira","samantha","jenny","aria","google us english"];
+            const upbeatVoice=window.speechSynthesis.getVoices().find(voice=>
+                voice.lang.toLowerCase().startsWith("en")&&
+                upbeatVoiceNames.some(name=>voice.name.toLowerCase().includes(name))
+            );
+            if(upbeatVoice)spokenMessage.voice=upbeatVoice;
             spokenMessage.onerror=event=>{
                 if(event.error!=="canceled"&&event.error!=="interrupted")mascotMessage.textContent=`${message} (Audio playback is unavailable.)`;
             };
