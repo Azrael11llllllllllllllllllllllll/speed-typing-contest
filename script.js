@@ -229,8 +229,22 @@ const mascotButton=$("mascot-button"),mascotMessage=$("mascot-message");let masc
 if(mascotButton&&mascotMessage){
     const mascotMessages=["You can do it!","Keep going!","Stay focused, you’ve got this!","Every keystroke gets you closer!","Believe in yourself!","You’re doing great!","Keep your eyes on the prize!","Stay strong, you can finish this!","You’re almost there!","Keep typing, you’re doing amazing!"];
     mascotButton.addEventListener("click",()=>{
-        mascotMessage.textContent=mascotMessages[Math.floor(Math.random()*mascotMessages.length)];
+        const message=mascotMessages[Math.floor(Math.random()*mascotMessages.length)];
+        mascotMessage.textContent=message;
         mascotMessage.hidden=false;
+        if("speechSynthesis" in window&&"SpeechSynthesisUtterance" in window){
+            window.speechSynthesis.cancel();
+            const spokenMessage=new SpeechSynthesisUtterance(message);
+            spokenMessage.lang="en-US";
+            spokenMessage.rate=0.95;
+            spokenMessage.pitch=1.05;
+            spokenMessage.onerror=event=>{
+                if(event.error!=="canceled"&&event.error!=="interrupted")mascotMessage.textContent=`${message} (Audio playback is unavailable.)`;
+            };
+            window.speechSynthesis.speak(spokenMessage);
+        }else{
+            mascotMessage.textContent=`${message} (Speech is not supported by this browser.)`;
+        }
         clearTimeout(mascotMessageTimeout);
         mascotMessageTimeout=setTimeout(()=>{mascotMessage.hidden=true},4500);
     });
