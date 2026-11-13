@@ -14,7 +14,7 @@ Password-protected Clear Results:
 Features:
 - On each visit, requires participants to read and agree to the contest mechanics and rules before continuing
 - Grade 10 Hard Mode passage with varied vocabulary and no numbers or special symbols
-- Sam speaks a random encouraging message aloud when clicked
+- Sam plays the supplied voice recording when clicked
 - Downloadable offline Android APK; app results stay on that device
 - Participant name
 - 1, 2, 3, or 5 minute timer

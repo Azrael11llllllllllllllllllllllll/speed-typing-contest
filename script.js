@@ -229,33 +229,21 @@ function showCertificateQr(result){
 function printCertificate(result){renderCertificatePopup(result,false,true)}
 const mascotButton=$("mascot-button"),mascotMessage=$("mascot-message");let mascotMessageTimeout;
 if(mascotButton&&mascotMessage){
-    const mascotMessages=["You can do it!","Keep going!","Stay focused, you’ve got this!","Every keystroke gets you closer!","Believe in yourself!","You’re doing great!","Keep your eyes on the prize!","Stay strong, you can finish this!","You’re almost there!","Keep typing, you’re doing amazing!"];
+    const samVoice=new Audio("audio/sam-voice.mp3?v=1");
+    samVoice.preload="auto";
     mascotButton.addEventListener("click",()=>{
-        const message=mascotMessages[Math.floor(Math.random()*mascotMessages.length)];
-        mascotMessage.textContent=message;
+        mascotMessage.textContent="Sam is cheering you on!";
         mascotMessage.hidden=false;
-        if("speechSynthesis" in window&&"SpeechSynthesisUtterance" in window){
-            window.speechSynthesis.cancel();
-            const spokenMessage=new SpeechSynthesisUtterance(message);
-            spokenMessage.lang="en-US";
-            spokenMessage.rate=1.08;
-            spokenMessage.pitch=1.35;
-            const upbeatVoiceNames=["zira","samantha","jenny","aria","google us english"];
-            const upbeatVoice=window.speechSynthesis.getVoices().find(voice=>
-                voice.lang.toLowerCase().startsWith("en")&&
-                upbeatVoiceNames.some(name=>voice.name.toLowerCase().includes(name))
-            );
-            if(upbeatVoice)spokenMessage.voice=upbeatVoice;
-            spokenMessage.onerror=event=>{
-                if(event.error!=="canceled"&&event.error!=="interrupted")mascotMessage.textContent=`${message} (Audio playback is unavailable.)`;
-            };
-            window.speechSynthesis.speak(spokenMessage);
-        }else{
-            mascotMessage.textContent=`${message} (Speech is not supported by this browser.)`;
-        }
+        samVoice.pause();
+        samVoice.currentTime=0;
+        samVoice.play().catch(error=>{
+            console.error("Could not play Sam's voice recording.",error);
+            mascotMessage.textContent="Sam's voice recording could not be played.";
+        });
         clearTimeout(mascotMessageTimeout);
-        mascotMessageTimeout=setTimeout(()=>{mascotMessage.hidden=true},4500);
+        mascotMessageTimeout=setTimeout(()=>{mascotMessage.hidden=true},8000);
     });
+    samVoice.addEventListener("ended",()=>{mascotMessage.hidden=true;});
 }
 renderTypingGuide();
 openCertificateFromQuery();

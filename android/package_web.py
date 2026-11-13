@@ -12,6 +12,7 @@ def main():
     for filename in ("index.html", "script.js", "style.css"):
         shutil.copy2(ROOT / filename, ASSET_ROOT / filename)
     shutil.copytree(ROOT / "logo", ASSET_ROOT / "logo", dirs_exist_ok=True)
+    shutil.copytree(ROOT / "audio", ASSET_ROOT / "audio", dirs_exist_ok=True)
     certificate_assets = ASSET_ROOT / "cetificates"
     certificate_assets.mkdir(parents=True, exist_ok=True)
     for filename in (
