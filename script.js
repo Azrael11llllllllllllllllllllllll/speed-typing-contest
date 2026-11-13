@@ -229,19 +229,23 @@ function showCertificateQr(result){
 function printCertificate(result){renderCertificatePopup(result,false,true)}
 const mascotButton=$("mascot-button"),mascotMessage=$("mascot-message");let mascotMessageTimeout;
 if(mascotButton&&mascotMessage){
-    const samVoice=new Audio("audio/sam-voice.mp3?v=1");
-    samVoice.preload="auto";
+    const mascotMessages=["You can do it!","Keep going!","Stay focused, you’ve got this!","Every keystroke gets you closer!","Believe in yourself!","You’re doing great!","Keep your eyes on the prize!","Stay strong, you can finish this!","You’re almost there!","Keep typing, you’re doing amazing!"];
+    const samVoice=new Audio();
+    samVoice.preload="none";
     mascotButton.addEventListener("click",()=>{
-        mascotMessage.textContent="Sam is cheering you on!";
+        const messageIndex=Math.floor(Math.random()*mascotMessages.length);
+        const message=mascotMessages[messageIndex];
+        mascotMessage.textContent=message;
         mascotMessage.hidden=false;
         samVoice.pause();
         samVoice.currentTime=0;
+        samVoice.src=`audio/sam-encouragements/encouragement-${String(messageIndex+1).padStart(2,"0")}.wav?v=1`;
         samVoice.play().catch(error=>{
             console.error("Could not play Sam's voice recording.",error);
-            mascotMessage.textContent="Sam's voice recording could not be played.";
+            mascotMessage.textContent=`${message} (Audio playback is unavailable.)`;
         });
         clearTimeout(mascotMessageTimeout);
-        mascotMessageTimeout=setTimeout(()=>{mascotMessage.hidden=true},8000);
+        mascotMessageTimeout=setTimeout(()=>{mascotMessage.hidden=true},12000);
     });
     samVoice.addEventListener("ended",()=>{mascotMessage.hidden=true;});
 }

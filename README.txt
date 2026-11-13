@@ -14,7 +14,8 @@ Password-protected Clear Results:
 Features:
 - On each visit, requires participants to read and agree to the contest mechanics and rules before continuing
 - Grade 10 Hard Mode passage with varied vocabulary and no numbers or special symbols
-- Sam plays the supplied voice recording when clicked
+- Sam speaks a random encouraging message in the supplied voice when clicked
+- The generated voice clips use F5-TTS by SWivid under CC BY-NC 4.0 (non-commercial use): https://github.com/SWivid/F5-TTS and https://creativecommons.org/licenses/by-nc/4.0/
 - Downloadable offline Android APK; app results stay on that device
 - Participant name
 - 1, 2, 3, or 5 minute timer
