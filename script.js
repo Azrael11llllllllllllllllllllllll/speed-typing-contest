@@ -135,7 +135,7 @@ function openCertificateFromQuery(){
 }
 function renderCertificatePopup(result, autoPrint=false, inline=false){
     const rank=Number.parseInt(result.place,10);
-    const template=rank===1?"First.png":rank===2?"second_clean.png":rank===3?"third_clean.png":"participant_clean.png";
+    const template=rank===1?"First_clean.png":rank===2?"second_clean.png":rank===3?"third_clean.png":"participant_clean.png";
     const imageUrl=new URL(`cetificates/${template}`,window.location.href).href;
     const certificateRatio="4/3";
     const screenMaxWidth="110vh";
